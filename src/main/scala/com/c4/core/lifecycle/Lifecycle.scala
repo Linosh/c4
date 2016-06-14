@@ -7,10 +7,8 @@ trait Lifecycle[T] {
   val name: String
   val next: Option[Lifecycle[T]]
   val previous: Option[Lifecycle[T]]
-  def execute(state: State[T])
+
+  def execute(state: State)
 }
 
-trait State[T] {
-  def get():T
-  def update(t:T): State[T]
-}
+

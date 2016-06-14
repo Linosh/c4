@@ -10,20 +10,14 @@ class LifecycleSpec extends FlatSpec {
     val lc = new Lifecycle[String] {
       override val name: String = "Test"
 
-      override def execute(state: State[String]): Unit = {
-        println(state.get())
+      override def execute(state: State): Unit = {
+        println("Hello World")
       }
 
       override val next = None
       override val previous = None
     }
 
-    val state = new State[String] {
-      override def get(): String = "Hello World"
-
-      override def update(t: String): State[String] = this
-    }
-
-    lc.execute(state)
+    lc.execute(KeyValueState())
   }
 }
