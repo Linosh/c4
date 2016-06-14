@@ -7,10 +7,10 @@ import org.scalatest._
   */
 class LifecycleSpec extends FlatSpec {
   "A lifecycle" should "have execute method" in {
-    val lc = new Lifecycle[String] {
+    val lc = new LifecyclePhase[String, MapLikeState[String, String]] {
       override val name: String = "Test"
 
-      override def execute(state: State): Unit = {
+      override def execute(state: MapLikeState[String, String]): Unit = {
         println("Hello World")
       }
 
@@ -18,6 +18,6 @@ class LifecycleSpec extends FlatSpec {
       override val previous = None
     }
 
-    lc.execute(KeyValueState())
+    lc.execute(MapLikeState[String, String]())
   }
 }
