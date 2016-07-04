@@ -14,3 +14,7 @@ lazy val root = (project in file("."))
   .settings(libraryDependencies ++= testDependecies)
 
 
+
+coverageEnabled := true
+coverageMinimum := 100
+coverageFailOnMinimum := true

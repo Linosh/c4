@@ -3,10 +3,10 @@ package com.c4.core.lifecycle
 /**
   * Created by dmitriiiermiichuk on 6/13/16.
   */
-sealed trait State {}
+sealed trait State
 
 trait KeyValueState[K, V] extends State {
-  def get(key: K): V
+  def get(key: K): Option[V]
 
   def add(key: K, value: V): KeyValueState[K, V]
 
@@ -14,11 +14,11 @@ trait KeyValueState[K, V] extends State {
 }
 
 case class MapLikeState[K, V](stateEntity: Map[K, V]) extends KeyValueState[K, V] {
-  override def get(key: K): V = stateEntity(key)
+  override def get(key: K): Option[V] = stateEntity.get(key)
 
-  override def remove(key: K): KeyValueState[K, V] = copy(stateEntity - key)
+  override def remove(key: K): MapLikeState[K, V] = copy(stateEntity - key)
 
-  override def add(key: K, value: V): KeyValueState[K, V] = copy(stateEntity + (key -> value))
+  override def add(key: K, value: V): MapLikeState[K, V] = copy(stateEntity + (key -> value))
 }
 
 object MapLikeState {

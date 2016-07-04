@@ -3,12 +3,15 @@ package com.c4.core.lifecycle
 /**
   * Trait to define each lifecycle step in each flow
   */
-trait LifecyclePhase[T, S <: State] {
+trait LifecyclePhase[S <: State] {
   val name: String
-  val next: Option[LifecyclePhase[T, S]]
-  val previous: Option[LifecyclePhase[T, S]]
-
-  def execute(state: S)
+  def execute(state: S): S
 }
 
+object LifecyclePhase {
+  def apply[S <: State](lfName: String, fun: S => S) = new LifecyclePhase[S] {
+    override val name: String = lfName
 
+    override def execute(state: S): S = fun(state)
+  }
+}
