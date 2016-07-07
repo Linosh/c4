@@ -3,7 +3,9 @@ package com.c4.core.lifecycle
 /**
   * Created by dmitriiiermiichuk on 6/13/16.
   */
-sealed trait State
+trait State {
+  def map[R <: State](fun: State => R): R = fun(this)
+}
 
 trait KeyValueState[K, V] extends State {
   def get(key: K): Option[V]

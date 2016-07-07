@@ -15,4 +15,11 @@ class StateTest extends FlatSpec {
   it should "be able to add and remove values" in {
     assertResult(None)(MapLikeState().add("k", "v").remove("k").get("k"))
   }
+
+  it should "be able to map states" in {
+    val s = MapLikeState().add("k", "v").map[NotificationState](s => new NotificationState())
+    assertResult(s.getClass)(classOf[NotificationState])
+  }
 }
+
+class NotificationState extends State {}
