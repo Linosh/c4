@@ -17,9 +17,9 @@ class StateTest extends FlatSpec {
   }
 
   it should "be able to map states" in {
-    val s = MapLikeState().add("k", "v").map[NotificationState](s => new NotificationState())
-    assertResult(s.getClass)(classOf[NotificationState])
+    val s = MapLikeState().add("k", "v").map[NotificationState](s => new NotificationState(s.get("k").get))
+    assertResult("v")(s.v)
   }
 }
 
-class NotificationState extends State {}
+class NotificationState(val v:String = "") extends State[NotificationState] {}

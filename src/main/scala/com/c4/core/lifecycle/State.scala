@@ -3,11 +3,12 @@ package com.c4.core.lifecycle
 /**
   * Created by dmitriiiermiichuk on 6/13/16.
   */
-trait State {
-  def map[R <: State](fun: State => R): R = fun(this)
+trait State[This <: State[This]] {
+  this: This =>
+  def map[R <: State[R]](fun: This => R): R = fun(this)
 }
 
-trait KeyValueState[K, V] extends State {
+trait KeyValueState[K, V] extends State[KeyValueState[K, V]] {
   def get(key: K): Option[V]
 
   def add(key: K, value: V): KeyValueState[K, V]

@@ -13,8 +13,8 @@ class LifecycleExecutorTest extends FlatSpec {
 
     val lf = Lifecycle.seqLifecycleBuilder[STATE]
       .withName("Simple LF")
-      .withPhase(LifecyclePhase[MapLikeState[String, String]]("Phase 1", state => state.add("k1", "v1")))
-      .withPhase(LifecyclePhase[MapLikeState[String, String]]("Phase 1", state => state.add("k2", "v2")))
+      .withPhase(LifecyclePhase[STATE]("Phase 1", state => state.add("k1", "v1")))
+      .withPhase(LifecyclePhase[STATE]("Phase 1", state => state.add("k2", "v2")))
       .build()
 
     val state = LifecycleExecutor.seqExecutor[STATE].execute(lf, MapLikeState())
