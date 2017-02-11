@@ -3,7 +3,7 @@ package com.c4.core.lifecycle
 /**
   * Created by dmitriiiermiichuk on 6/13/16.
   */
-trait State[This <: State[This]] {
+trait State[+This] {
   this: This =>
   def map[R <: State[R]](fun: This => R): R = fun(this)
 }

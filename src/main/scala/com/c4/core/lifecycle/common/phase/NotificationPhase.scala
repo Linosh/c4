@@ -1,13 +1,19 @@
 package com.c4.core.lifecycle.common.phase
 
-import com.c4.core.lifecycle.{State, LifecyclePhase}
+import com.c4.core.lifecycle.LifecyclePhase
 
 /**
   * Created by dmitriiiermiichuk on 7/4/16.
   */
-abstract class NotificationPhase[S <: State[S]] extends LifecyclePhase[S] {
+abstract class NotificationPhase[STATE] extends LifecyclePhase[STATE] {
+  protected def sendNotification(state: STATE)
 
-  //override val name: String =
+  override def execute(state: STATE): STATE = {
+    sendNotification(state)
+    state
+  }
+}
 
-  //override def execute(state: S): S = ???
+class EmailNotificationPhase[STATE](val name:String) extends NotificationPhase[STATE] {
+  override def sendNotification(state: STATE) = println("Email Sent")
 }
