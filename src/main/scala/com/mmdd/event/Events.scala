@@ -20,6 +20,9 @@ final case class CreateMField(mf: MField) extends MFieldCommand(mf)
 final case class UpdateMField(mf: MField) extends MFieldCommand(mf)
 final case class DeleteMField(mf: MField) extends MFieldCommand(mf)
 
+/* stats */
+case object PrintStats extends UpdateMCommand
+
 
 /* read commands*/
 final case class FindMObject(id: String) extends ReadMCommand

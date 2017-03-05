@@ -17,3 +17,6 @@ final case class UnLinkCObject(cObject: CObject) extends CObjectCommand(cObject)
 /* read commands*/
 final case class FindCObject(id: String) extends ReadCCommand
 case object FindAllCObjects extends ReadCCommand
+
+/* stats */
+case object PrintStats extends UpdateCCommand
