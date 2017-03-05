@@ -12,21 +12,22 @@ final class StateWriter(state: CState) extends Actor {
   import com.mmddv2.model.CObject._
 
   override def receive: Receive = {
-    updatesCnt += 1
+    case v =>
+      updatesCnt += 1
 
-    {
-      case CreateCObject(mo) => state + mo
-      case UpdateCObject(mo) => state + mo
-      case DeleteCObject(mo) => state - mo
-      case LinkCObject(mo, newParent) => state + (mo + (cparent -> ObjectCValue(newParent)))
-      case UnLinkCObject(mo) => state + (mo - cparent)
+      v match {
+        case CreateCObject(mo) => state + mo
+        case UpdateCObject(mo) => state + mo
+        case DeleteCObject(mo) => state - mo
+        case LinkCObject(mo, newParent) => state + (mo + (cparent -> ObjectCValue(newParent)))
+        case UnLinkCObject(mo) => state + (mo - cparent)
 
-      case PrintStats => printStats()
-    }
+        case PrintStats => printStats()
+      }
   }
 
   private def printStats() = {
     println(s"State updates: $updatesCnt")
-    println(s"Per second: ${updatesCnt / (System.currentTimeMillis() - startTime) / 1000}")
+    println(s"Per second: ${updatesCnt / ((System.currentTimeMillis() - startTime) / 1000)}")
   }
 }

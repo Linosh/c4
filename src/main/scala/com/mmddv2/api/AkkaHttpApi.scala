@@ -1,11 +1,14 @@
 package com.mmddv2.api
 
+import java.util.concurrent.atomic.AtomicInteger
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Directives.{as, complete, entity, get, path, pathPrefix, post, _}
 import akka.stream.ActorMaterializer
 import com.mmddv2.context.CContext
-import com.mmddv2.event.{CreateCObject, FindCObject}
+import com.mmddv2.event.{CreateCObject, FindCObject, PrintStats}
 import com.mmddv2.model.CObject
 import com.mmddv2.state.InMemoryCState
 
@@ -15,6 +18,8 @@ object AkkaHttpApi extends App with JsonSupport {
   implicit val system = ActorSystem("my-system")
   implicit val materializer = ActorMaterializer()
   implicit val executionContext = system.dispatcher
+
+  val cnt = new AtomicInteger(0)
 
   val ctx = CContext("core", InMemoryCState())
   ctx.init()
@@ -29,20 +34,20 @@ object AkkaHttpApi extends App with JsonSupport {
         } ~
           pathEnd {
             post {
+              cnt.incrementAndGet()
               entity(as[CObject])(mo => {
                 ctx.updateCommand(CreateCObject(mo))
-                complete("ok")
+                complete(HttpEntity(ContentTypes.`application/json`, "ok"))
               })
             }
           }
-      } ~
-        path("field" / Remaining) { id =>
+      }~
+        path("stats") {
           get {
-            complete("ok")
-          } ~
-            post {
-              complete("ok")
-            }
+            println(s"\n\nRecieved msgs ${cnt.intValue()}")
+            ctx.updateCommand(PrintStats)
+            complete(HttpEntity(ContentTypes.`application/json`, "ok"))
+          }
         }
     }
 
