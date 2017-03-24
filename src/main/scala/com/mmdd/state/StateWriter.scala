@@ -1,32 +1,32 @@
 package com.mmdd.state
 
-import akka.actor.Actor
-import com.mmdd.event.{PrintStats, _}
+import com.mmdd.event._
+import com.mmdd.model.CObject._
+import com.mmdd.model.ObjectCValue
 
-final class StateWriter(state: MState) extends Actor {
-  private val startTime = System.currentTimeMillis()
-  private var updatesCnt = 0
+sealed trait StateWriter {
+  private[state] val state: CState
 
-  override def receive: Receive = {
-    case v =>
-      updatesCnt += 1
-      v match {
-        case CreateMObject(mo) => state + mo
-        case UpdateMObject(mo) => state + mo
-        case DeleteMObject(mo) => state - mo
-        case LinkMObject(mo, newParent) => state + mo.copy(parent = Some(newParent))
-        case UnLinkMObject(mo) => state + mo.copy(parent = None)
+  def write(cmd: UpdateCCommand): Unit
+}
 
-        case CreateMField(mf) => state + mf
-        case UpdateMField(mf) => state + mf
-        case DeleteMField(mf) => state - mf
+object StateWriter {
+  def apply(state: CState): StateWriter = new StateWriterImpl(state)
 
-        case PrintStats => printStats()
-      }
+  // JUST FOR TESTING PURPOSES
+  private[state] def apply(cState: CState, f: UpdateCCommand => Unit): StateWriter = new StateWriter {
+    override def write(cmd: UpdateCCommand) = f(cmd)
+
+    override private[state] val state = cState
   }
+}
 
-  private def printStats() = {
-    println(s"State updates: $updatesCnt")
-    println(s"Per second: ${updatesCnt / ((System.currentTimeMillis() - startTime) / 1000)}")
+private final class StateWriterImpl(private[state] val state: CState) extends StateWriter {
+
+  def write(cmd: UpdateCCommand): Unit = cmd match {
+    case CreateCObject(mo) => state + mo
+    case UpdateCObject(mo) => state + mo
+    case DeleteCObject(mo) => state - mo
+    case ChangeParent(mo, newParent) => state + (mo + (parentAttr -> ObjectCValue(newParent)))
   }
 }
