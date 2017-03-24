@@ -1,5 +1,8 @@
 .idea/
+*.iml
 target/
 project/target
 project/project/
 ws.sc
+
+**/node_modules
