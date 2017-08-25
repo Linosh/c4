@@ -28,6 +28,6 @@ val root = (project in file("."))
 
 
 coverageEnabled := true
-coverageMinimum := 100
+coverageMinimum := 10
 coverageFailOnMinimum := true
 coverageExcludedPackages := ".*AkkaHttpApi.*"
